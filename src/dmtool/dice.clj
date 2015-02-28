@@ -2,33 +2,35 @@
   (import
     java.util.Random))
 
-(def ^:dynamic *rng* (Random.))
+
+(def ^:dynamic *roll-gen*
+  "Function which returns a int from 1 to d"
+  (let [rng (Random.)]
+    #(inc (.nextInt rng %))))
+
 
 (defn roll
   "Roll a die"
   ([]
    (roll 6))
   ([d]
-   (inc (.nextInt *rng* d))))
+   (*roll-gen* d)))
 
-(defn forced-rng
+
+(defn forced-gen
   [roll-map]
   (let [forced-rolls (atom roll-map)
-        source-rng *rng*]
-    (proxy [Random] []
-      (nextInt
-        [d]
-        (if-let [rolls (seq (get @forced-rolls d))]
-          (do
-            (swap! forced-rolls update-in [d] (partial drop 1))
-            (dec (first rolls)))
-          (.nextInt source-rng d))
-        )
-      ))
-  )
+        source-gen *roll-gen*]
+    (fn [d]
+      (if-let [rolls (seq (get @forced-rolls d))]
+        (do
+          (swap! forced-rolls update-in [d] (partial drop 1))
+          (first rolls))
+        (source-gen d)))))
+
 
 (defmacro with-rolls
   "Force the next rolls of the specified die"
   [roll-map & body]
-  `(binding [*rng* (forced-rng ~roll-map)]
+  `(binding [*roll-gen* (forced-gen ~roll-map)]
      ~@body))
