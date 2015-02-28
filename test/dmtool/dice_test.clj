@@ -17,4 +17,6 @@
 (deftest roll-5d8
   (testing "Roll 5d8."
     (with-rolls {8 [2 8 5 2 3]}
-      (is (= [2 8 5 2 3] (roll 5 8))))))
+      (is (= 20 (roll 5 8))))
+    (with-rolls {8 [2 8 5 2 3]}
+      (is (= [2 8 5 2 3] (roll-dice 5 8 nil))))))

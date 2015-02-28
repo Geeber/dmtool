@@ -9,12 +9,17 @@
     #(inc (.nextInt rng %))))
 
 
+(defn roll-dice
+  [n d opts]
+   (take n (map *roll-gen* (repeat d))))
+
+
 (defn roll
-  "Roll a die"
+  "Roll some dice and return the sum"
   ([d]
-   (first (roll 1 d)))
+   (roll 1 d))
   ([n d & {:as opts}]
-   (take n (map *roll-gen* (repeat d)))))
+   (reduce + (roll-dice n d opts))))
 
 
 (defn forced-gen
