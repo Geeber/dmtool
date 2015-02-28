@@ -13,3 +13,8 @@
       (is (= 6 (roll 6)))
       (is (pos? (roll 6)))
       (is (<= (roll 6) 6)))))
+
+(deftest roll-5d8
+  (testing "Roll 5d8."
+    (with-rolls {8 [2 8 5 2 3]}
+      (is (= [2 8 5 2 3] (roll 5 8))))))

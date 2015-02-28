@@ -11,10 +11,10 @@
 
 (defn roll
   "Roll a die"
-  ([]
-   (roll 6))
   ([d]
-   (*roll-gen* d)))
+   (first (roll 1 d)))
+  ([n d & {:as opts}]
+   (take n (map *roll-gen* (repeat d)))))
 
 
 (defn forced-gen
