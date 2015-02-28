@@ -14,9 +14,14 @@
       (is (pos? (roll 6)))
       (is (<= (roll 6) 6)))))
 
+(deftest roll-4d6d1
+  (testing "Roll 4d, drop the lowest")
+    (with-rolls {6 [1 5 6 4]}
+      (is (= 15 (roll 4 6 (drop-low 1))))))
+
 (deftest roll-5d8
   (testing "Roll 5d8."
     (with-rolls {8 [2 8 5 2 3]}
       (is (= 20 (roll 5 8))))
     (with-rolls {8 [2 8 5 2 3]}
-      (is (= [2 8 5 2 3] (roll-dice 5 8 nil))))))
+      (is (= [[2 8 5 2 3]] (roll-dice 5 8 nil))))))

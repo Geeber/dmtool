@@ -10,16 +10,17 @@
 
 
 (defn roll-dice
-  [n d opts]
-   (take n (map *roll-gen* (repeat d))))
+  [n d modifiers]
+  (let [raw-rolls (take n (map *roll-gen* (repeat d)))]
+    (reduce #(cons (%2 (first %1)) %1) (list raw-rolls) modifiers)))
 
 
 (defn roll
   "Roll some dice and return the sum"
   ([d]
    (roll 1 d))
-  ([n d & {:as opts}]
-   (reduce + (roll-dice n d opts))))
+  ([n d & modifiers]
+   (reduce + (first (roll-dice n d modifiers)))))
 
 
 (defn forced-gen
@@ -39,3 +40,28 @@
   [roll-map & body]
   `(binding [*roll-gen* (forced-gen ~roll-map)]
      ~@body))
+
+
+(defn drop-low
+  ""
+  [n]
+  (fn [s] (drop n (sort s))))
+
+
+(defn drop-high
+  ""
+  [n]
+  (fn [s] (drop n (reverse (sort s)))))
+
+
+(defn keep-low
+  ""
+  [n]
+  (fn [s] (take n (sort s))) )
+
+
+(defn keep-high
+  ""
+  [n]
+  (fn [s] (take n (reverse (sort s)))))
+
