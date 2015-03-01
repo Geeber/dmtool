@@ -1,18 +1,22 @@
 (ns dmtool.core
-  (:use compojure.core
-        ring.middleware.json
-        ring.util.response)
-  (:require [compojure.route :as route]
-            [dmtool.view :as view]))
-
-(defn hello
-  "I don't do a whole lot."
-  [x]
-  (str "Hello, " x "! Nice to meet you."))
+  (:require [compojure.core :refer [defroutes GET]]
+            [compojure.route :as route]
+            [dmtool.view :as view]
+            (ring.middleware
+              [json :refer [wrap-json-response]]
+              [not-modified :refer [wrap-not-modified]]
+              [content-type :refer [wrap-content-type]]
+              [resource :refer [wrap-resource]])
+            [ring.util.response]
+            [dmtool.character :as character]))
 
 (defroutes handler
-  (GET "/" [] (view/index-page))
-  (GET "/rest" [] (response {:email "kevin@kevinlitwack.com"}))
+  (GET "/" [] (view/index-page (character/character)))
+  (GET "/character" [] (view/render-character (character/character)))
   (route/resources "/"))
 
-(def app (wrap-json-response handler))
+(def app (-> handler
+             (wrap-resource "public")
+             wrap-content-type
+             wrap-not-modified
+             wrap-json-response))
