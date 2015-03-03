@@ -12,6 +12,7 @@
 
 (defroutes handler
   (GET "/" [] (view/index-page (character/character)))
+  (GET "/about" [] (view/about))
   (GET "/character" [] (view/render-character (character/character)))
   (route/resources "/"))
 

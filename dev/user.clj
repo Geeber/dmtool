@@ -5,5 +5,4 @@
     [dmtool.dice :as dice]
     [dmtool.stats :as stats]
     [dmtool.character :as character]
-    )
-  )
+    ))
